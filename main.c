@@ -28,12 +28,12 @@ int main() {
             while(runner->vertex_num != end) runner = runner->next;
             int ans = runner->distance;
             if(ans >= MAX) ans = -1;
-            printf("Dijkstra shortest path: %d\n", ans);
+            printf("Dijkstra shortest path: %d \n", ans);
         }
         else if(c == 'T'){
             int ans = 0;
             ans = TSP(head_of_heads);
-            printf("TSP shortest path: %d\n", ans);
+            printf("TSP shortest path: %d \n", ans);
         }
     }
     set_the_graph_free(head_of_heads);
