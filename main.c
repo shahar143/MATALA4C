@@ -28,7 +28,7 @@ int main() {
             while(runner->vertex_num != end) runner = runner->next;
             int ans = runner->distance;
             if(ans >= MAX) ans = -1;
-            printf("Dijkstra shortest path: %d \n", ans);
+            printf("Dijsktra shortest path: %d \n", ans);
         }
         else if(c == 'T'){
             int ans = 0;
