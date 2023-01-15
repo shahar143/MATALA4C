@@ -35,11 +35,8 @@ int main() {
             ans = TSP(head_of_heads);
             printf("TSP shortest path: %d\n", ans);
         }
-        else if(c == 'F'){
-            set_the_graph_free(head_of_heads);
-        }
     }
-
+    set_the_graph_free(head_of_heads);
 
     return 0;
 

@@ -369,6 +369,7 @@ int TSP(vertex** main_head){
     }
 
     free(result_arr);
+    for(int i = 0; i < row; i++) free(matrix[i]);
     free(matrix);
     free(arr);
     if(min_path >= MAX) return -1;
