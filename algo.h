@@ -3,7 +3,6 @@
 //
 
 #include <stdbool.h>
-#include <limits.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +11,8 @@
 #define MATALA4C_ALGO_H
 
 #endif //MATALA4C_ALGO_H
+
+#define MAX_INT 2147483647
 
 typedef struct edge{
     int weight;

@@ -31,7 +31,7 @@ int main() {
             vertex* runner = *head_of_heads;
             while(runner->vertex_num != end) runner = runner->next;
             int ans = runner->distance;
-            if(ans >= INT_MAX) ans = -1;
+            if(ans >= MAX_INT) ans = -1;
             printf("Dijsktra shortest path: %d \n", ans);
         }
         else if(c == 'T'){

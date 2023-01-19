@@ -243,7 +243,7 @@ void Dijsktra(vertex** main_head, int start, int number_of_vertexes){
     vertex* runner = *main_head;
     //filling all vertex's info
     while(runner != NULL){
-        runner->distance = INT_MAX;
+        runner->distance = MAX_INT;
         runner->flag = false;
         runner = runner->next;
     }
@@ -313,7 +313,7 @@ int TSP(vertex** main_head, int number_of_vertexes){
             //sum all distances and store it in the result_arr
         }
     }
-    int min_path = INT_MAX;
+    int min_path = MAX_INT;
     // find the minimum path in the result_arr
     for(int i = 0; i < row; i++){
         if(result_arr[i] < min_path) min_path = result_arr[i];
@@ -324,7 +324,7 @@ int TSP(vertex** main_head, int number_of_vertexes){
     free(matrix);
     free(arr);
     //if min_path is still MAX, it means that there is no path between the vertexes, so return -1
-    if(min_path >= INT_MAX) return -1;
+    if(min_path >= MAX_INT) return -1;
     else return min_path;
 }
 
