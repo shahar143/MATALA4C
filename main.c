@@ -1,33 +1,34 @@
-#include <stdio.h>
-#include <string.h>
 #include "algo.h"
 
 int main() {
     vertex *head = NULL;
     vertex **head_of_heads = &head;
+    int number_of_vertexes = 0;
     char c = {0};
     while(scanf("%c", &c) != EOF){
         if(c == 'A'){
-            A(head_of_heads);
+            //scan the number of vertexes
+            scanf("%d", &number_of_vertexes);
+            build_graph_cmd(head_of_heads, number_of_vertexes);
             //printGraph_cmd(head_of_heads);
         }
         else if(c == 'B'){
-            B(head_of_heads);
+            insert_node_cmd(head_of_heads, number_of_vertexes);
             //printGraph_cmd(head_of_heads);
         }
         else if(c == 'D'){
-            D(head_of_heads);
+            delete_node_cmd(head_of_heads, number_of_vertexes);
             //printGraph_cmd(head_of_heads);
         }
         else if(c == 'S'){
             int start = 0, end = 0;
             scanf("%d", &start);
             scanf("%d", &end);
-            Dijakstra(head_of_heads, start);
+            Dijsktra(head_of_heads, start, number_of_vertexes);
             vertex* runner = *head_of_heads;
             while(runner->vertex_num != end) runner = runner->next;
             int ans = runner->distance;
-            if(ans >= MAX) ans = -1;
+            if(ans >= INT_MAX) ans = -1;
             printf("Dijsktra shortest path: %d \n", ans);
         }
         else if(c == 'T'){

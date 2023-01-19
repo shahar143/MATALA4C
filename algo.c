@@ -1,14 +1,10 @@
 //
 // Created by shahar on 1/3/23.
 //
-#include <stdio.h>
-#include <stdlib.h>
 #include "algo.h"
 
-//global variable for the number of vertexes
-//think about edge cases!!!
-int n;
 static int itr = 0;
+
 //2 loops in this function. first loop iterate over the vertexes, second loop iterates over the edges
 void printGraph_cmd(vertex** head){
     vertex* runner = *head;
@@ -26,11 +22,11 @@ void printGraph_cmd(vertex** head){
     printf("\n");
 }
 
-void append_new_vertex(int i, vertex** head){
+void append_new_vertex(int new_vertex_num, vertex** head){
     //create new vertex
     vertex* new_vertex = (vertex*)malloc(sizeof(vertex));
     if(new_vertex == NULL) exit(-1);
-    new_vertex->vertex_num = i; // set the vertex number
+    new_vertex->vertex_num = new_vertex_num; // set the vertex number
     new_vertex->next = NULL; // set the next vertex to NULL
     new_vertex->edge = NULL; // set the edge LinkedList to NULL
     //if there is no vertex in the list
@@ -71,10 +67,8 @@ void append_new_edge(int vertex_num, int Pend_point, int weight, vertex** head){
     }
 }
 
-void A(vertex **main_head){
-    //scan the number of vertexes
-    scanf("%d", &n);
-    if(n == 0){
+void build_graph_cmd(vertex **main_head, int number_of_vertexes){
+    if(number_of_vertexes == 0){
         return;
     }
     int vertex_current_num = 0;
@@ -89,11 +83,11 @@ void A(vertex **main_head){
     //head_of_heads is a pointer to the head of the graph -> we use it inorder to not return anything from the functions
     vertex** head_of_heads = &head;
     //create the vertexes
-    for(int i = 0; i < n; i++){
+    for(int i = 0; i < number_of_vertexes; i++){
         append_new_vertex(i, head_of_heads);
     }
     //scan the vertexes and their edges
-    while(counter < n){
+    while(counter < number_of_vertexes){
         scanf("%c", &useless);//for the n char
         scanf("%d", &vertex_current_num);
         while(scanf("%d", &edge_current_end_point) != 0){  // while we dont try to scan chars like stupid people DAAAAA!!
@@ -109,23 +103,27 @@ void A(vertex **main_head){
 }
 
 void set_edges_free(vertex** pVertex){
-    if((*pVertex)->edge == NULL) return;
+    if((*pVertex)->edge == NULL) return; // if there are no edges return
+    //set prev_runner and runner to the first edge
     edge* runner = (*pVertex)->edge;
     edge* prev_runner = (*pVertex)->edge;
+    //while there are still edges
     while(runner != NULL){
-        runner = runner->next;
-        free(prev_runner);
-        prev_runner = runner;
+        runner = runner->next; // set runner to the next edge
+        free(prev_runner); // free the prev_runner
+        prev_runner = runner; // set prev_runner to the runner
     }
-    (*pVertex)->edge = NULL;
+    (*pVertex)->edge = NULL; //eventually set edge to NULL
 }
 
 void set_the_graph_free(vertex **main_head){
     if((*main_head) == NULL) return;
     vertex* prev_runner = *main_head;
     vertex* runner = *main_head;
-    vertex** cab;
+    vertex** cab; //a double pointer to send to set_edges_free.
+    // in this way, set_edges_free will get the address of edge and won't have to return anything
     while(runner != NULL){
+        // same erasing technique as in set_edges_free
         runner = runner->next;
         cab = &prev_runner;
         set_edges_free(cab);
@@ -134,15 +132,15 @@ void set_the_graph_free(vertex **main_head){
     }
     *main_head = NULL;
     main_head = NULL;
-}// create this function tomorrow and try to not run the code before you do it
+}
 
-void B(vertex **main_head){
+void insert_node_cmd(vertex **main_head, int number_of_vertexes){
     int new_vertex_num;
     int edge_current_end_point;
     int edge_current_weight;
     scanf("%d", &new_vertex_num);
     //if the vertex is already in the graph
-    if(new_vertex_num < n){
+    if(new_vertex_num < number_of_vertexes){
         vertex *runner = *main_head;
         //iterate over the vertexes until we find the vertex we want to delete its edges
         while(runner->vertex_num != new_vertex_num) runner = runner->next;
@@ -157,7 +155,7 @@ void B(vertex **main_head){
         }
     }
     else{
-        n = new_vertex_num + 1;
+        number_of_vertexes++;
         //continue else- if the vertex doesn't exist
         append_new_vertex(new_vertex_num, main_head);
         while(scanf("%d", &edge_current_end_point) != 0) {  // while there is still input
@@ -168,31 +166,32 @@ void B(vertex **main_head){
     }
 }
 
+//a function that free all edges that end with the vertex we want to delete
 void free_all_edge_end_with(vertex** main_head, int end_point){
     int counter;
     vertex* runner = *main_head;
     edge* runner2;
     edge* runner3;
     edge* victim;
-    while(runner != NULL){
+    while(runner != NULL){ // iterate over all vertexes
         runner2 = runner->edge;
         counter = 0;
         runner3 = NULL;
-        while(runner2 != NULL){
-            if(runner2->Pend_point->vertex_num == end_point){
-                if(counter == 0){
-                    victim = runner2;
-                    runner2 = runner2->next;
-                    runner->edge = runner2;
+        while(runner2 != NULL){ // iterate over all edges of a specific vertex
+            if(runner2->Pend_point->vertex_num == end_point){ // if the edge ends with the vertex we want to delete
+                if(counter == 0){ // if the edge is the first edge of the vertex
+                    victim = runner2; // set victim to the edge we want to delete
+                    runner2 = runner2->next; // set runner2 to the next edge
+                    runner->edge = runner2; // set the vertex's edge to the next edge
                     free(victim);
                     continue;
                 }
-                else{
-                    victim = runner2;
-                    runner2 = runner2->next;
+                else{ // if the edge is not the first edge of the vertex
+                    victim = runner2; // set victim to the edge we want to delete
+                    runner2 = runner2->next; // set runner2 to the next edge
                     runner3 = runner->edge;
-                    while(runner3->next != victim)  runner3 = runner3->next;
-                    runner3->next = runner2;
+                    while(runner3->next != victim)  runner3 = runner3->next; // iterate over the edges until we find the edge before the victim
+                    runner3->next = runner2; // set the edge before the victim to the edge after the victim
                     free(victim);
                     continue;
                 }
@@ -205,31 +204,31 @@ void free_all_edge_end_with(vertex** main_head, int end_point){
 }
 
 
-void D(vertex** main_head){
+void delete_node_cmd(vertex** main_head, int number_of_vertexes){
     int vertex_num1 = -1;
     scanf("%d", &vertex_num1);
-    if(vertex_num1 >= n || (*main_head) == NULL || main_head == NULL){
+    if(vertex_num1 >= number_of_vertexes || (*main_head) == NULL || main_head == NULL){ // if the vertex doesn't exist
         printf("you can't delete something that doesn't exist buddy\n");
         return;
     }
-    free_all_edge_end_with(main_head, vertex_num1);
+    free_all_edge_end_with(main_head, vertex_num1); // free all edges that end with the vertex we want to delete
     int counter = 0;
     vertex* runner = *main_head;
     vertex* runner2 = *main_head;
     vertex* victim;
     vertex** cab;
-    while(runner->vertex_num != vertex_num1){
+    while(runner->vertex_num != vertex_num1){ // iterate over the vertexes until we find the vertex we want to delete
         runner = runner->next;
         counter++;
     }
-    if(counter == 0){
+    if(counter == 0){ // if the vertex is the first vertex
         cab = &runner;
         set_edges_free(cab);
         victim = runner;
         (*main_head) = runner->next;
         free(victim);
     }
-    else{
+    else{ // if the vertex is not the first vertex
         while(runner2->next != runner) runner2 = runner2->next;
         cab = &runner;
         set_edges_free(cab);
@@ -240,56 +239,11 @@ void D(vertex** main_head){
     }
 }
 
-
-/*
-void A(vertex **main_head){
-    //scan the number of vertexes
-    scanf("%d", &n);
-    if(n == 0){
-        return;
-    }
-    int vertex_current_num = 0;
-    int edge_current_end_point = 0;
-    int edge_current_weight = 0;
-    int control;
-    int counter = 0;
-    int tmp;
-    char useless;
-    //head is the actual head of the graph
-    vertex* head = NULL;
-    //head_of_heads is a pointer to the head of the graph -> we use it inorder to not return anything from the functions
-    vertex** head_of_heads = &head;
-    //create the vertexes
-    for(int i = 0; i < n; i++){
-        append_new_vertex(i, head_of_heads);
-    }
-    //scan the vertexes and their edges
-    while(counter < n){
-        //check if i can remove it because it always fails because of the n. but maybe it does scan something
-        //check if tmp actually scan something
-        control = scanf("%d", &tmp);
-        if(control == 0){
-            scanf("%c", &useless);//for the n char
-            scanf("%d", &vertex_current_num);
-            while(scanf("%d", &edge_current_end_point) != 0){  // while we dont try to scan chars like stupid people DAAAAA!!
-                scanf("%d", &edge_current_weight); // read the weight
-                //function that append a new edge to the vertex
-                append_new_edge(vertex_current_num, edge_current_end_point,
-                                edge_current_weight, head_of_heads);
-            }
-        }
-        //counter that mark that we have finished with the vertex number (counter)
-        counter++;
-    }
-    *main_head = head;
-}*/
-
-void Dijakstra(vertex** main_head, int start){
+void Dijsktra(vertex** main_head, int start, int number_of_vertexes){
     vertex* runner = *main_head;
     //filling all vertex's info
     while(runner != NULL){
-        runner->distance = MAX;
-        runner->markos_mom = -1;
+        runner->distance = INT_MAX;
         runner->flag = false;
         runner = runner->next;
     }
@@ -298,7 +252,7 @@ void Dijakstra(vertex** main_head, int start){
     while(runner->vertex_num != start) runner = runner->next;
     runner->distance = 0;
     int counter = 0;
-    while(counter != n){
+    while(counter != number_of_vertexes){
         runner = *main_head;
         vertex* chosen = *main_head;
         //a loop that iterates over all vertexes
@@ -317,7 +271,6 @@ void Dijakstra(vertex** main_head, int start){
         //if vertex has no egdes, continue to next iteration
         if(neighbor == NULL) continue;
         //a while loop that sends every edge to relax function
-        //check if you dont need to increment the counter before continue!!!!!!!!!!!
         while(neighbor != NULL){
             vertex** chosen_cab = &chosen;
             edge** neighbor_cab = &neighbor;
@@ -332,7 +285,6 @@ void Dijakstra(vertex** main_head, int start){
 void relax(vertex** chosen, edge** neighbor){
     if((*neighbor)->Pend_point->distance > ((*chosen)->distance + (*neighbor)->weight)){
         (*neighbor)->Pend_point->distance = ((*chosen)->distance + (*neighbor)->weight);
-        (*neighbor)->Pend_point->markos_mom = (*chosen)->vertex_num;
     }
 }
 
@@ -347,23 +299,22 @@ int TSP(vertex** main_head){
     int** matrix = (int **) malloc(row*sizeof(int*));
     for(int i = 0; i < row; i++) matrix[i] = (int *)malloc(col* sizeof(int));
     int*** matrix_cab = &matrix;
+    // create all permutations of the arr and insert them to a matrix in size of row*col or actually col*(col!)
     permute(arr, matrix_cab, 0, col -1, col, row);
     itr = 0;
-    /*for(int i = 0; i < row; i++){
-        for(int j = 0; j < col; j++)
-            printf("%d ", matrix[i][j]);
-        printf("\n");
-    }*/
     int* result_arr = (int *)calloc(row, sizeof(int));
     for(int i = 0; i < row; i++){
         for(int j = 0; j < col-1; j++){
-            Dijakstra(main_head, matrix[i][j]);
+            Dijsktra(main_head, matrix[i][j]); // run dijakstra on every permutation and calculate the distance between every 2 vertexes in the permutation
             vertex* runner = *main_head;
             while(runner->vertex_num != matrix[i][j+1]) runner = runner->next;
+            //we are looking for the destination vertex that we run dijakstra on because it will contain in its distance field the shortest distance between the 2 vertexes
             result_arr[i] += runner->distance;
+            //sum all distances and store it in the result_arr
         }
     }
-    int min_path = MAX;
+    int min_path = INT_MAX;
+    // find the minimum path in the result_arr
     for(int i = 0; i < row; i++){
         if(result_arr[i] < min_path) min_path = result_arr[i];
     }
@@ -372,7 +323,8 @@ int TSP(vertex** main_head){
     for(int i = 0; i < row; i++) free(matrix[i]);
     free(matrix);
     free(arr);
-    if(min_path >= MAX) return -1;
+    //if min_path is still MAX, it means that there is no path between the vertexes, so return -1
+    if(min_path >= INT_MAX) return -1;
     else return min_path;
 }
 
@@ -388,11 +340,7 @@ int factorial(int n){
     else return n* factorial(n-1);
 }
 
-/* Function to print permutations of string
-This function takes three parameters:
-1. String
-2. Starting index of the string
-3. Ending index of the string. */
+//this function is a recursive function that creates all permutations of the arr and stores them to the matrix
 void permute(int* a, int*** matrix, int start, int end, int cols, int rows){
     if (start == end){
         for(int j = 0; j < cols; j++) {
@@ -404,7 +352,7 @@ void permute(int* a, int*** matrix, int start, int end, int cols, int rows){
         for (int i = start; i <= end; i++) {
             swap((a+ start) , (a + i));
             permute(a, matrix, start + 1, end, cols, rows);
-            swap((a + start), (a + i)); // backtrack
+            swap((a + start), (a + i));
             }
         }
 }
