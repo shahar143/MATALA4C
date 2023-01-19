@@ -12,7 +12,7 @@
 
 #endif //MATALA4C_ALGO_H
 
-#define MAX_INT 2000000
+#define MAX_INT 2147483647
 
 typedef struct edge{
     int weight;
