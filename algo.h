@@ -29,8 +29,8 @@ typedef struct vertex{
 
 void append_new_vertex(int new_vertex_num, vertex** head); // append a new vertex to the list
 void build_graph_cmd(vertex **main_head, int number_of_vertexes); // read the input and create the graph
-void insert_node_cmd(vertex **main_head, int number_of_vertexes); // read the input and insert a new vertex to the graph
-void delete_node_cmd(vertex **main_head, int number_of_vertexes); // read the input and delete a vertex from the graph
+void insert_node_cmd(vertex **main_head, int* pnumber_of_vertexes); // read the input and insert a new vertex to the graph
+void delete_node_cmd(vertex **main_head, int* pnumber_of_vertexes); // read the input and delete a vertex from the graph
 void printGraph_cmd(vertex **head); // print the graph
 void append_new_edge(int vertex_num, int Pend_point, int weight, vertex** head); // append a new edge to a vertex in the graph
 void set_the_graph_free(vertex **main_head); // free the graph
@@ -42,5 +42,5 @@ void Dijsktra(vertex** main_head, int start, int number_of_vertexes);
 void permute(int* a, int*** matrix, int start, int end, int cols, int rows); // a function that calculate all the permutations of a given array
 void swap(int* x, int* y);
 int factorial(int n);
-int TSP(vertex** main_head);
+int TSP(vertex** main_head, int number_of_vertexes);
 // find the shortest path that goes through all given vertexes

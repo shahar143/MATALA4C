@@ -3,7 +3,7 @@
 //
 #include "algo.h"
 
-static int itr = 0;
+static int itr = 0; // a static variable used in the function permute
 
 //2 loops in this function. first loop iterate over the vertexes, second loop iterates over the edges
 void printGraph_cmd(vertex** head){
@@ -134,17 +134,16 @@ void set_the_graph_free(vertex **main_head){
     main_head = NULL;
 }
 
-void insert_node_cmd(vertex **main_head, int number_of_vertexes){
+void insert_node_cmd(vertex **main_head, int* pnumber_of_vertexes){
     int new_vertex_num;
     int edge_current_end_point;
     int edge_current_weight;
     scanf("%d", &new_vertex_num);
     //if the vertex is already in the graph
-    if(new_vertex_num < number_of_vertexes){
+    if(new_vertex_num < (*pnumber_of_vertexes)){
         vertex *runner = *main_head;
         //iterate over the vertexes until we find the vertex we want to delete its edges
         while(runner->vertex_num != new_vertex_num) runner = runner->next;
-        //free all of its edges-> check it works!!
         vertex** cab = &runner;
         set_edges_free(cab);
         //same code as in A function
@@ -155,8 +154,8 @@ void insert_node_cmd(vertex **main_head, int number_of_vertexes){
         }
     }
     else{
-        number_of_vertexes++;
         //continue else- if the vertex doesn't exist
+        (*pnumber_of_vertexes)++;
         append_new_vertex(new_vertex_num, main_head);
         while(scanf("%d", &edge_current_end_point) != 0) {  // while there is still input
             scanf("%d", &edge_current_weight); // read the weight
@@ -204,10 +203,10 @@ void free_all_edge_end_with(vertex** main_head, int end_point){
 }
 
 
-void delete_node_cmd(vertex** main_head, int number_of_vertexes){
+void delete_node_cmd(vertex** main_head, int* pnumber_of_vertexes){
     int vertex_num1 = -1;
     scanf("%d", &vertex_num1);
-    if(vertex_num1 >= number_of_vertexes || (*main_head) == NULL || main_head == NULL){ // if the vertex doesn't exist
+    if(vertex_num1 >= (*pnumber_of_vertexes) || (*main_head) == NULL || main_head == NULL){ // if the vertex doesn't exist
         printf("you can't delete something that doesn't exist buddy\n");
         return;
     }
@@ -237,6 +236,7 @@ void delete_node_cmd(vertex** main_head, int number_of_vertexes){
         runner2->next = runner;
         free(victim);
     }
+    (*pnumber_of_vertexes)--;
 }
 
 void Dijsktra(vertex** main_head, int start, int number_of_vertexes){
@@ -289,7 +289,7 @@ void relax(vertex** chosen, edge** neighbor){
 }
 
 
-int TSP(vertex** main_head){
+int TSP(vertex** main_head, int number_of_vertexes){
     int col = 0;
     scanf("%d", &col);
     int* arr = (int *)malloc(col* sizeof(int));
@@ -305,7 +305,7 @@ int TSP(vertex** main_head){
     int* result_arr = (int *)calloc(row, sizeof(int));
     for(int i = 0; i < row; i++){
         for(int j = 0; j < col-1; j++){
-            Dijsktra(main_head, matrix[i][j]); // run dijakstra on every permutation and calculate the distance between every 2 vertexes in the permutation
+            Dijsktra(main_head, matrix[i][j], number_of_vertexes); // run dijakstra on every permutation and calculate the distance between every 2 vertexes in the permutation
             vertex* runner = *main_head;
             while(runner->vertex_num != matrix[i][j+1]) runner = runner->next;
             //we are looking for the destination vertex that we run dijakstra on because it will contain in its distance field the shortest distance between the 2 vertexes

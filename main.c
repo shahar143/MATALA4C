@@ -13,11 +13,14 @@ int main() {
             //printGraph_cmd(head_of_heads);
         }
         else if(c == 'B'){
-            insert_node_cmd(head_of_heads, number_of_vertexes);
+            int* pnumber_of_vertexes = &number_of_vertexes;
+            insert_node_cmd(head_of_heads, pnumber_of_vertexes);
+
             //printGraph_cmd(head_of_heads);
         }
         else if(c == 'D'){
-            delete_node_cmd(head_of_heads, number_of_vertexes);
+            int* pnumber_of_vertexes = &number_of_vertexes;
+            delete_node_cmd(head_of_heads, pnumber_of_vertexes);
             //printGraph_cmd(head_of_heads);
         }
         else if(c == 'S'){
@@ -33,7 +36,7 @@ int main() {
         }
         else if(c == 'T'){
             int ans = 0;
-            ans = TSP(head_of_heads);
+            ans = TSP(head_of_heads, number_of_vertexes);
             printf("TSP shortest path: %d \n", ans);
         }
     }
