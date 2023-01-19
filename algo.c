@@ -309,6 +309,10 @@ int TSP(vertex** main_head, int number_of_vertexes){
             vertex* runner = *main_head;
             while(runner->vertex_num != matrix[i][j+1]) runner = runner->next;
             //we are looking for the destination vertex that we run dijakstra on because it will contain in its distance field the shortest distance between the 2 vertexes
+            if(runner->distance == MAX_INT){ // if there is no path between the 2 vertexes
+                result_arr[i] = MAX_INT;
+                continue;
+            }
             result_arr[i] += runner->distance;
             //sum all distances and store it in the result_arr
         }
